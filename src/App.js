@@ -8,25 +8,29 @@ import Evolution from './components/Evolution';
 import { useEffect, useState } from 'react';
 
 function App() {
-	const [pokemonID, setPokemonID] = useState(1);
+	const [pokemonID, setPokemonID] = useState(7);
 	const [pokemonData, setPokemonData] = useState(null);
 	const [pokeEvolution, setPokeEvolution] = useState(null);
 	const fetchPokemonData = async () => {
 		try {
-			const resp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonID}`);
-			setPokemonData(resp.data);
-			console.log(resp);
+			const pokemonDetailsResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonID}`);
+			console.log(pokemonDetailsResp);
+			setPokemonData(pokemonDetailsResp.data);
+			const pokemonSpeciesResp = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonID}`);
+			const pokemonEvolutionChainResp = await axios.get(pokemonSpeciesResp.data.evolution_chain.url);
+
+			if (pokemonEvolutionChainResp.data.chain.evolves_to.length === 0) {
+				setPokeEvolution([{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default }]);
+			}
+			// if (pokemonEvolutionChainResp.data.chain.evolves_to.length > 0) {
+			// 	setPokeEvolution([{name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default },
+			//   { name: pokemonEvolutionChainResp.data.chain.evolves_to[0].species.name,
+			//   :
+			//   }
+			//   ]);
+			// }
 		} catch (error) {
 			alert('Not found!');
-		}
-	};
-
-	const fetchPokeEvolution = async () => {
-		try {
-			const response = await axios.get(`https://pokeapi.co/api/v2/evolution-chain/${pokemonID}`);
-			setPokeEvolution(response.data);
-		} catch (error) {
-			alert('Evolution data not found!');
 		}
 	};
 
@@ -42,19 +46,18 @@ function App() {
 	useEffect(() => {
 		(async () => {
 			await fetchPokemonData();
-			await fetchPokeEvolution();
 		})();
 	}, [pokemonID]);
 
 	return (
 		<div className='App'>
 			<div className='Title'>PokeDex Project</div>
-			{pokemonData && pokeEvolution && (
+			{pokemonData && (
 				<Container>
 					<Details name={pokemonData.name} types={pokemonData.types} />
 					<Picture sprite={pokemonData.sprites.front_default} />
 					<Stats stats={pokemonData.stats} />
-					<Evolution evolution={pokeEvolution} original={{ sprite: pokemonData.sprites.front_default, name: pokemonData.name }} />
+					{/* <Evolution evolution={pokeEvolution} original={{ sprite: pokemonData.sprites.front_default, name: pokemonData.name }} /> */}
 					<button onClick={() => handlePokemonIDChange('-')}> {'<'} </button>
 					<button onClick={() => handlePokemonIDChange('+')}> {'>'} </button>
 				</Container>
