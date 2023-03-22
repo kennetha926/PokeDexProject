@@ -8,7 +8,7 @@ import Evolution from './components/Evolution';
 import { useEffect, useState } from 'react';
 
 function App() {
-	const [pokemonID, setPokemonID] = useState(7);
+	const [pokemonID, setPokemonID] = useState(4);
 	const [pokemonData, setPokemonData] = useState(null);
 	const [pokeEvolution, setPokeEvolution] = useState(null);
 	const fetchPokemonData = async () => {
@@ -18,17 +18,32 @@ function App() {
 			setPokemonData(pokemonDetailsResp.data);
 			const pokemonSpeciesResp = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonID}`);
 			const pokemonEvolutionChainResp = await axios.get(pokemonSpeciesResp.data.evolution_chain.url);
-
+			// No evolution
 			if (pokemonEvolutionChainResp.data.chain.evolves_to.length === 0) {
 				setPokeEvolution([{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default }]);
 			}
-			// if (pokemonEvolutionChainResp.data.chain.evolves_to.length > 0) {
-			// 	setPokeEvolution([{name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default },
-			//   { name: pokemonEvolutionChainResp.data.chain.evolves_to[0].species.name,
-			//   :
-			//   }
-			//   ]);
-			// }
+
+			// Only one evolution
+			if (pokemonEvolutionChainResp.data.chain.evolves_to.length > 0 && pokemonEvolutionChainResp.data.chain.evolves_to[0].evolves_to.length === 0) {
+				const secondEvolutionResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.evolves_to[0].species.name}`);
+				setPokeEvolution([
+					{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default },
+					{ name: secondEvolutionResp.data.name, sprite: secondEvolutionResp.data.sprites.front_default }
+				]);
+			}
+
+			// Two evolutions
+			if (pokemonEvolutionChainResp.data.chain.evolves_to.length > 0 && pokemonEvolutionChainResp.data.chain.evolves_to[0].evolves_to.length > 0) {
+				const secondEvolutionResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.evolves_to[0].species.name}`);
+				const thirdEvolutionResp = await axios.get(
+					`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.evolves_to[0].evolves_to[0].species.name}`
+				);
+				setPokeEvolution([
+					{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default },
+					{ name: secondEvolutionResp.data.name, sprite: secondEvolutionResp.data.sprites.front_default },
+					{ name: thirdEvolutionResp.data.name, sprite: thirdEvolutionResp.data.sprites.front_default }
+				]);
+			}
 		} catch (error) {
 			alert('Not found!');
 		}
@@ -52,12 +67,12 @@ function App() {
 	return (
 		<div className='App'>
 			<div className='Title'>PokeDex Project</div>
-			{pokemonData && (
+			{pokemonData && pokeEvolution && (
 				<Container>
 					<Details name={pokemonData.name} types={pokemonData.types} />
 					<Picture sprite={pokemonData.sprites.front_default} />
 					<Stats stats={pokemonData.stats} />
-					{/* <Evolution evolution={pokeEvolution} original={{ sprite: pokemonData.sprites.front_default, name: pokemonData.name }} /> */}
+					<Evolution evolution={pokeEvolution} />
 					<button onClick={() => handlePokemonIDChange('-')}> {'<'} </button>
 					<button onClick={() => handlePokemonIDChange('+')}> {'>'} </button>
 				</Container>
