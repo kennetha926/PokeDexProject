@@ -25,21 +25,23 @@ function App() {
 
 			// Only one evolution
 			if (pokemonEvolutionChainResp.data.chain.evolves_to.length > 0 && pokemonEvolutionChainResp.data.chain.evolves_to[0].evolves_to.length === 0) {
+				const firstEvolutionResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.species.name}`);
 				const secondEvolutionResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.evolves_to[0].species.name}`);
 				setPokeEvolution([
-					{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default },
+					{ name: firstEvolutionResp.data.name, sprite: firstEvolutionResp.data.sprites.front_default },
 					{ name: secondEvolutionResp.data.name, sprite: secondEvolutionResp.data.sprites.front_default }
 				]);
 			}
 
 			// Two evolutions
 			if (pokemonEvolutionChainResp.data.chain.evolves_to.length > 0 && pokemonEvolutionChainResp.data.chain.evolves_to[0].evolves_to.length > 0) {
+				const firstEvolutionResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.species.name}`);
 				const secondEvolutionResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.evolves_to[0].species.name}`);
 				const thirdEvolutionResp = await axios.get(
 					`https://pokeapi.co/api/v2/pokemon/${pokemonEvolutionChainResp.data.chain.evolves_to[0].evolves_to[0].species.name}`
 				);
 				setPokeEvolution([
-					{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default },
+					{ name: firstEvolutionResp.data.name, sprite: firstEvolutionResp.data.sprites.front_default },
 					{ name: secondEvolutionResp.data.name, sprite: secondEvolutionResp.data.sprites.front_default },
 					{ name: thirdEvolutionResp.data.name, sprite: thirdEvolutionResp.data.sprites.front_default }
 				]);
@@ -69,12 +71,20 @@ function App() {
 			<div className='Title'>PokeDex Project</div>
 			{pokemonData && pokeEvolution && (
 				<Container>
-					<Details name={pokemonData.name} types={pokemonData.types} />
-					<Picture sprite={pokemonData.sprites.front_default} />
-					<Stats stats={pokemonData.stats} />
-					<Evolution evolution={pokeEvolution} />
-					<button onClick={() => handlePokemonIDChange('-')}> {'<'} </button>
-					<button onClick={() => handlePokemonIDChange('+')}> {'>'} </button>
+					<div className='picture detail-box'>
+						<Picture sprite={pokemonData.sprites.front_default} />
+					</div>
+					<div className='stats detail-box'>
+						<Stats stats={pokemonData.stats} />
+					</div>
+					<div className='details detail-box'>
+						<Details name={pokemonData.name} types={pokemonData.types} />
+					</div>
+					<div className='evolution detail-box'>
+						<Evolution evolution={pokeEvolution} />
+					</div>
+					{/* <button onClick={() => handlePokemonIDChange('-')}> {'<'} </button>
+					<button onClick={() => handlePokemonIDChange('+')}> {'>'} </button> */}
 				</Container>
 			)}
 		</div>

@@ -1,15 +1,18 @@
 const Evolution = (props) => {
 	return (
-		<div>
-			{props.evolution.map((e, index) => {
-				return (
-					<div key={index}>
-						<p>{e.name}</p>
-						<img src={e.sprite} />
-					</div>
-				);
-			})}
-		</div>
+		<>
+			<p className='card-title'>Evolution Chain</p>
+			<div className='evolution-wrapper'>
+				{props.evolution.map((e, index) => {
+					return (
+						<div key={index}>
+							<p>{e.name}</p>
+							<img src={e.sprite} />
+						</div>
+					);
+				})}
+			</div>
+		</>
 	);
 };
 
