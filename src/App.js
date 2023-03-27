@@ -6,13 +6,18 @@ import Stats from './components/Stats';
 import Details from './components/Details';
 import Evolution from './components/Evolution';
 import { useEffect, useState } from 'react';
+import { SpinnerCircular } from 'spinners-react';
 
 function App() {
 	const [pokemonID, setPokemonID] = useState(4);
 	const [pokemonData, setPokemonData] = useState(null);
 	const [pokeEvolution, setPokeEvolution] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
 	const fetchPokemonData = async () => {
 		try {
+			if (!isLoading) {
+				setIsLoading(true);
+			}
 			const pokemonDetailsResp = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonID}`);
 			console.log(pokemonDetailsResp);
 			setPokemonData(pokemonDetailsResp.data);
@@ -48,6 +53,8 @@ function App() {
 			}
 		} catch (error) {
 			alert('Not found!');
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -69,23 +76,34 @@ function App() {
 	return (
 		<div className='App'>
 			<div className='Title'>PokeDex Project</div>
-			{pokemonData && pokeEvolution && (
-				<Container>
-					<div className='picture detail-box'>
-						<Picture sprite={pokemonData.sprites.front_default} />
-					</div>
-					<div className='stats detail-box'>
-						<Stats stats={pokemonData.stats} />
-					</div>
-					<div className='details detail-box'>
-						<Details name={pokemonData.name} types={pokemonData.types} />
-					</div>
-					<div className='evolution detail-box'>
-						<Evolution evolution={pokeEvolution} />
-					</div>
-					{/* <button onClick={() => handlePokemonIDChange('-')}> {'<'} </button>
-					<button onClick={() => handlePokemonIDChange('+')}> {'>'} </button> */}
-				</Container>
+			{isLoading ? (
+				<SpinnerCircular enabled={isLoading} />
+			) : (
+				<div className='master-container'>
+					<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('-')}>
+						{'<'}
+					</button>
+					{pokemonData && pokeEvolution && (
+						<Container>
+							<div className='picture detail-box'>
+								<Picture sprite={pokemonData.sprites.front_default} />
+							</div>
+							<div className='stats detail-box'>
+								<Stats stats={pokemonData.stats} />
+							</div>
+							<div className='details detail-box'>
+								<Details name={pokemonData.name} types={pokemonData.types} />
+							</div>
+							<div className='evolution detail-box'>
+								<Evolution evolution={pokeEvolution} />
+							</div>
+						</Container>
+					)}
+
+					<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('+')}>
+						{'>'}
+					</button>
+				</div>
 			)}
 		</div>
 	);
