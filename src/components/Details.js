@@ -1,9 +1,12 @@
 const Details = (props) => {
 	return (
 		<div>
-			<h1>{props.name}</h1>
 			{props.types.map((e, index) => {
 				return <div key={index}> {e.type.name} </div>;
+			})}
+			{props.weaknesses.map((e, index) => {
+				console.log(e);
+				return <div key={index}> {e.name}</div>;
 			})}
 		</div>
 	);

@@ -12,6 +12,7 @@ function App() {
 	const [pokemonID, setPokemonID] = useState(4);
 	const [pokemonData, setPokemonData] = useState(null);
 	const [pokeEvolution, setPokeEvolution] = useState(null);
+	const [pokeWeakness, setPokeWeakness] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const fetchPokemonData = async () => {
 		try {
@@ -22,7 +23,14 @@ function App() {
 			console.log(pokemonDetailsResp);
 			setPokemonData(pokemonDetailsResp.data);
 			const pokemonSpeciesResp = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonID}`);
+
+			//Pokemon Type Weakness Get Request
+			const pokemonTypeResp = await axios.get(`https://pokeapi.co/api/v2/type/${pokemonID}`);
+			setPokeWeakness(pokemonTypeResp.data.damage_relations.double_damage_from);
+
+			// Evolution Get Request
 			const pokemonEvolutionChainResp = await axios.get(pokemonSpeciesResp.data.evolution_chain.url);
+
 			// No evolution
 			if (pokemonEvolutionChainResp.data.chain.evolves_to.length === 0) {
 				setPokeEvolution([{ name: pokemonDetailsResp.data.name, sprite: pokemonDetailsResp.data.sprites.front_default }]);
@@ -79,31 +87,34 @@ function App() {
 			{isLoading ? (
 				<SpinnerCircular enabled={isLoading} />
 			) : (
-				<div className='master-container'>
-					<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('-')}>
-						{'<'}
-					</button>
-					{pokemonData && pokeEvolution && (
-						<Container>
-							<div className='picture detail-box'>
-								<Picture sprite={pokemonData.sprites.front_default} />
-							</div>
-							<div className='stats detail-box'>
-								<Stats stats={pokemonData.stats} />
-							</div>
-							<div className='details detail-box'>
-								<Details name={pokemonData.name} types={pokemonData.types} />
-							</div>
-							<div className='evolution detail-box'>
-								<Evolution evolution={pokeEvolution} />
-							</div>
-						</Container>
-					)}
+				<>
+					<h1>{pokemonData.name}</h1>
+					<div className='master-container'>
+						<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('-')}>
+							{'<'}
+						</button>
+						{pokemonData && pokeEvolution && pokeWeakness && (
+							<Container>
+								<div className='picture detail-box'>
+									<Picture sprite={pokemonData.sprites.front_default} />
+								</div>
+								<div className='stats detail-box'>
+									<Stats stats={pokemonData.stats} />
+								</div>
+								<div className='details detail-box'>
+									<Details name={pokemonData.name} types={pokemonData.types} weaknesses={pokeWeakness} />
+								</div>
+								<div className='evolution detail-box'>
+									<Evolution evolution={pokeEvolution} />
+								</div>
+							</Container>
+						)}
 
-					<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('+')}>
-						{'>'}
-					</button>
-				</div>
+						<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('+')}>
+							{'>'}
+						</button>
+					</div>
+				</>
 			)}
 		</div>
 	);
