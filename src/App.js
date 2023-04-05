@@ -25,8 +25,29 @@ function App() {
 			const pokemonSpeciesResp = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonID}`);
 
 			//Pokemon Type Weakness Get Request
-			const pokemonTypeResp = await axios.get(`https://pokeapi.co/api/v2/type/${pokemonID}`);
-			setPokeWeakness(pokemonTypeResp.data.damage_relations.double_damage_from);
+			const weaknesses = [];
+			const firstPokemonTypeResp = await axios.get(`https://pokeapi.co/api/v2/type/${pokemonDetailsResp.data.types[0].type.name}`);
+			// [{name: 'fire', url: ''}, {name: 'electric', url: ''}]
+			firstPokemonTypeResp.data.damage_relations.double_damage_from.forEach((e) => {
+				weaknesses.push(e.name);
+			});
+			// weaknesses (at this point in time) = ['fire', 'electric']
+			if (pokemonDetailsResp.data.types.length > 1) {
+				const secondPokemonTypeResp = await axios.get(`https://pokeapi.co/api/v2/type/${pokemonDetailsResp.data.types[1].type.name}`);
+				// [{name: 'rock', url: ''}]
+				secondPokemonTypeResp.data.damage_relations.double_damage_from.forEach((e) => {
+					// avoid duplicating types in our weaknesses array
+					if (!weaknesses.includes(e.name)) {
+						weaknesses.push(e.name);
+					}
+				});
+			}
+			// we want an array to look like this: so we can map over it easily
+			// ['fire', 'electric', 'rock']
+			// we DONT want the array to look like this:
+			// [['fire', 'electric'], ['rock']]
+			console.log(weaknesses);
+			setPokeWeakness(weaknesses);
 
 			// Evolution Get Request
 			const pokemonEvolutionChainResp = await axios.get(pokemonSpeciesResp.data.evolution_chain.url);
@@ -82,13 +103,18 @@ function App() {
 	}, [pokemonID]);
 
 	return (
-		<div className='App'>
+		<div className={`App bg-${pokemonData?.types?.[0]?.type?.name}`}>
 			<div className='Title'>PokeDex Project</div>
 			{isLoading ? (
 				<SpinnerCircular enabled={isLoading} />
 			) : (
 				<>
-					<h1>{pokemonData.name}</h1>
+					{pokemonData && (
+						<div className='title-wrapper'>
+							<h1>{pokemonData.name}</h1>
+							<h2>Pokemon #{pokemonData.id}</h2>
+						</div>
+					)}
 					<div className='master-container'>
 						<button className='change-pokemon-btn' onClick={() => handlePokemonIDChange('-')}>
 							{'<'}

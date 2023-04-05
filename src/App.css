@@ -1,5 +1,87 @@
+:root {
+	--accent-color: white;
+}
+
 .App {
 	text-transform: uppercase;
+}
+
+.bg-normal {
+	background-image: linear-gradient(to right, var(--accent-color), #555437);
+}
+
+.bg-fire {
+	background-image: linear-gradient(to right, var(--accent-color), #ac500d);
+}
+
+.bg-water {
+	background-image: linear-gradient(to right, var(--accent-color), #0f328a);
+}
+
+.bg-grass {
+	background-image: linear-gradient(to right, var(--accent-color), #5f902d);
+}
+
+.bg-electric {
+	background-image: linear-gradient(to right, var(--accent-color), #826905);
+}
+
+.bg-ice {
+	background-image: linear-gradient(to right, var(--accent-color), #256463);
+}
+
+.bg-fighting {
+	background-image: linear-gradient(to right, var(--accent-color), #9b2620);
+}
+
+.bg-poison {
+	background-image: linear-gradient(to right, var(--accent-color), #803481);
+}
+
+.bg-ground {
+	background-image: linear-gradient(to right, var(--accent-color), #654f13);
+}
+
+.bg-flying {
+	background-image: linear-gradient(to right, var(--accent-color), #280f70);
+}
+
+.bg-psychic {
+	background-image: linear-gradient(to right, var(--accent-color), #960631);
+}
+
+.bg-bug {
+	background-image: linear-gradient(to right, var(--accent-color), #86931b);
+}
+
+.bg-rock {
+	background-image: linear-gradient(to right, var(--accent-color), #93802e);
+}
+
+.bg-ghost {
+	background-image: linear-gradient(to right, var(--accent-color), #5a477a);
+}
+
+.bg-dark {
+	background-image: linear-gradient(to right, var(--accent-color), #5a463a);
+}
+
+.bg-dragon {
+	background-image: linear-gradient(to right, var(--accent-color), #3605aa);
+}
+
+.bg-steel {
+	background-image: linear-gradient(to right, var(--accent-color), #313149);
+}
+
+.bg-fairy {
+	background-image: linear-gradient(to right, var(--accent-color), #571219);
+}
+
+.title-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .container {
@@ -67,8 +149,8 @@
 .stat-wrapper {
 	display: flex;
 	align-items: center;
-
 	width: 100%;
+	height: calc(100% / 6);
 }
 
 .stat-wrapper > label {
@@ -106,4 +188,88 @@
 
 .change-pokemon-btn:active {
 	background-color: #71767f;
+}
+
+.typeStyle {
+	background-color: grey;
+	border: 3px;
+	border-radius: 7px;
+	text-align: left;
+	width: 30%;
+	border: 1px solid white;
+	padding: 0.25rem;
+	color: white;
+	font-weight: bold;
+}
+
+.normal {
+	background-color: #555437;
+}
+
+.fire {
+	background-color: #ac500d;
+}
+
+.water {
+	background-color: #0f328a;
+}
+
+.grass {
+	background-color: #5f902d;
+}
+
+.electric {
+	background-color: #826905;
+}
+
+.ice {
+	background-color: #256463;
+}
+
+.fighting {
+	background-color: #9b2620;
+}
+
+.poison {
+	background-color: #803481;
+}
+
+.ground {
+	background-color: #654f13;
+}
+
+.flying {
+	background-color: #280f70;
+}
+
+.psychic {
+	background-color: #960631;
+}
+
+.bug {
+	background-color: #86931b;
+}
+
+.rock {
+	background-color: #93802e;
+}
+
+.ghost {
+	background-color: #5a477a;
+}
+
+.dark {
+	background-color: #5a463a;
+}
+
+.dragon {
+	background-color: #3605aa;
+}
+
+.steel {
+	background-color: #313149;
+}
+
+.fairy {
+	background-color: #571219;
 }

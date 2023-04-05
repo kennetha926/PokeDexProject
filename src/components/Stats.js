@@ -2,7 +2,7 @@ const Stats = (props) => {
 	return (
 		<>
 			<p className='card-title'>Stats</p>
-			<div>
+			<div style={{ height: '100%' }}>
 				{props.stats.map((e, index) => {
 					return (
 						<div key={index} className='stat-wrapper'>
