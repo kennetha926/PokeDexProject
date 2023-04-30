@@ -1,6 +1,6 @@
 # Pokedex Project
 
-[PokeDex Project]
+[PokeDex Project](https://poke-dex-project.vercel.app/)
 
 The PokeDex Project is a comprehensive tool for Pokémon enthusiasts to view basic and advanced information regarding their favorite Pokémon.
 
@@ -23,7 +23,7 @@ $ npm run start
 
 ## Status
 
-Website is deployed to Netlify and running stable.
+Website is deployed to Vercel and running stable.
 
 ## Contributors
 
